@@ -1,0 +1,24 @@
+[project]
+name = "Plotador"
+version = "0.1.0"
+description = "Easy to use plot app"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+    { name = "Matheus Lima" }
+]
+dependencies = [
+  "flet",
+  "pandas",
+  "seaborn",
+  "matplotlib"
+]
+
+[tool.flet]
+# org = "com.mycompany"
+product = "Plotador"
+# company = "My Company"
+copyright = "Copyright (C) 2025 by My Company"
+
+[tool.flet.app]
+path = "src"
