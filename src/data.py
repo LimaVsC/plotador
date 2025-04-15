@@ -79,7 +79,9 @@ class Data:
                                           for item in _hue_opts]
         self.scatter_size_opts.options = [ft.dropdown.Option(f"{item}")
                                           for item in _hue_opts]
+        self.update()
 
+    def update(self):
         self.x_axis.update()
         self.y_axis.update()
 

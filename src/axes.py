@@ -7,11 +7,9 @@ class Axes():
     def axes_props(self, handle_type, getx, gety,
                    xlabel, ylabel, labels, title):
 
-        # Props title
         self.props_title = ft.Text("General Properties",
                                    weight=ft.FontWeight.BOLD,
                                    size=title_font_size)
-        # Plot Type
         self.plot_type = ft.Dropdown(label="Plot Type",
                                      options_fill_horizontally=True,
                                      width=300,
@@ -20,9 +18,6 @@ class Axes():
                                               ft.dropdown.Option("Scatter"),
                                               ft.dropdown.Option("Histogram")],
                                      on_change=handle_type)
-
-        # ***************************************************************************
-        # Axes
 
         self.axes_title = ft.Text("Plot type and Axes",
                                   weight=ft.FontWeight.BOLD,
@@ -45,13 +40,11 @@ class Axes():
                                     width=width,
                                     on_submit=xlabel)
 
-        # Y label
         self.y_label = ft.TextField(label="Y Label",
                                     border_radius=border_radius,
                                     width=width,
                                     on_submit=ylabel)
 
-        # Title
         self.plot_title = ft.TextField(label="Plot Title",
                                        border_radius=border_radius,
                                        width=width,

@@ -10,7 +10,6 @@ class Histogram():
         self.title = ft.Text("Histogram Properties",
                              weight=ft.FontWeight.BOLD,
                              size=title_font_size)
-        # Bins
         self.bins_label = ft.Text("Bins")
         self.bins_slider = ft.Slider(min=10,
                                      max=50,
@@ -28,7 +27,6 @@ class Histogram():
                                      value=1,
                                      on_change=cols_wrap)
 
-        # KDE?
         self.kde = ft.Checkbox(label="Add KDE plot",
                                height=35,
                                on_change=kde)
@@ -44,7 +42,6 @@ class Histogram():
                                           border_radius=border_radius,
                                           on_change=cols)
 
-        # Log-scale?
         self.log_scalex = ft.Checkbox(label="Log-scale for X axis",
                                       height=35,
                                       on_change=logx)
@@ -52,17 +49,14 @@ class Histogram():
                                       height=35,
                                       on_change=logy)
 
-        # Cumulative
         self.cumulative = ft.Checkbox(label="Cumulative",
                                       height=35,
                                       on_change=c)
 
-        # Color Bar?
         self.color_bar = ft.Checkbox(label="Add a color bar",
                                      height=35,
                                      on_change=cbar)
 
-        # Stats
         self.hist_stats_opts = ["Count",
                                 "Frequency",
                                 "Probability",
@@ -77,7 +71,6 @@ class Histogram():
                                       value="Probability",
                                       on_change=stats)
 
-        # Hist element
         self.hist_element_opts = ["Bars", "Step", "Poly"]
         self.hist_element_list = [ft.dropdown.Option(f"{item}") for item in self.hist_element_opts]
         self.hist_elements = ft.Dropdown(label="Hist element",
@@ -88,7 +81,6 @@ class Histogram():
                                          value="Bars",
                                          on_change=element)
 
-        # Hist kind
         self.hist_kind_opts = ["Histogram", "KDE", "eCDF"]
         self.hist_kind_list = [ft.dropdown.Option(f"{item}") for item in self.hist_kind_opts]
         self.hist_kinds = ft.Dropdown(label="Hist kind",
@@ -127,7 +119,6 @@ class Histogram():
                                               self.cols_row],
                                     horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                                     visible=False)
-        # Hist kind
         self.hist_kind_opts = ["Histogram", "KDE", "eCDF"]
         self.hist_kind_list = [ft.dropdown.Option(f"{item}") for item in self.hist_kind_opts]
         self.hist_kinds = ft.Dropdown(label="Hist kind",

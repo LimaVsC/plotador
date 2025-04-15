@@ -24,7 +24,6 @@ class Line():
         self.line_props_title = ft.Text("Line Properties",
                                         weight=ft.FontWeight.BOLD,
                                         size=title_font_size)
-        # Line width
         self.width_label = ft.Text("Line width")
         self.width_slider = ft.Slider(min=1,
                                       max=5,
@@ -38,11 +37,9 @@ class Line():
                                      divisions=4,
                                      label="{value}",
                                      on_change=cols_wrap)
-        # Line markers
         self.line_markers = ft.Checkbox(label="Add line markers",
                                         height=35,
                                         on_change=lm)
-        # Line Style
         self.line_options = ['Line',
                              'Dash',
                              'Dash-dot',

@@ -8,18 +8,14 @@ import numpy as np
 
 
 class Plot:
-    def __init__(self, histogram_obj, line_obj, scatter_obj):
+    def __init__(self, data_obj, histogram_obj, line_obj, scatter_obj):
+        self.data = data_obj
         self.histogram = histogram_obj
         self.line = line_obj
         self.scatter = scatter_obj
 
-        # self.hist_props = None
-        # self.scatter_props = None
-        # self.line_props = None
-
         self.page = None
         self.main_plot = ft.Image()
-        self.ax = None
         self.df = None
         self.x = []
         self.y = []
@@ -29,14 +25,11 @@ class Plot:
         self.height = 8
         self.aspect = 1
 
-        # properties of plots
         self.hist_kde = False
+        self.log_scalex = False
+        self.log_scaley = False
         self.hist_log_scalex = False
         self.hist_log_scaley = False
-        self.scatter_log_scalex = False
-        self.scatter_log_scaley = False
-        self.line_log_scalex = False
-        self.line_log_scaley = False
         self.hist_color_bar = False
         self.hist_element = "bars"
         self.hist_kind = "hist"
@@ -44,8 +37,6 @@ class Plot:
         self.cols_wrap = None
         self.size = 50
         self.marker = "."
-        self.color = "b"
-        self.dark_theme = False
         self.x_label = None
         self.y_label = None
         self.label = None
@@ -60,10 +51,25 @@ class Plot:
         self._initial_state = copy.deepcopy(self.__dict__)
 
     def reset(self):
-        self.__dict__.update(self._initial_state)
+        to_keep = ["histogram",
+                   "scatter",
+                   "line",
+                   "page",
+                   "main_plot",
+                   "data",
+                   "df",
+                   "x",
+                   "y"]
+        to_reset = {k: v for k, v in self._initial_state.items()
+                    if k not in to_keep}
+
+        self.__dict__.update(to_reset)
+        self.data.update()
 
     def handle_type(self, e):
         plot_type = e.data
+        if self.plot_type is not None and plot_type != self.plot_type:
+            self.reset()
         if plot_type == "Histogram":
             self.histogram.hist_props.visible = True
             self.line.line_props.visible = False
@@ -97,7 +103,6 @@ class Plot:
 
             self.get_type(e)
 
-    # Set functions
     def set_bins(self, e):
         self.bins = int(e.control.value)
         self.plot_update()
@@ -153,32 +158,18 @@ class Plot:
             self.hist_log_scaley = False
         self.plot_update()
 
-    def set_scatter_log_scalex(self, e):
+    def set_log_scalex(self, e):
         if e.control.value:
-            self.scatter_log_scalex = True
+            self.log_scalex = True
         else:
-            self.scatter_log_scalex = False
+            self.log_scalex = False
         self.plot_update()
 
-    def set_scatter_log_scaley(self, e):
+    def set_log_scaley(self, e):
         if e.control.value:
-            self.scatter_log_scaley = True
+            self.log_scaley = True
         else:
-            self.scatter_log_scaley = False
-        self.plot_update()
-
-    def set_line_log_scalex(self, e):
-        if e.control.value:
-            self.line_log_scalex = True
-        else:
-            self.line_log_scalex = False
-        self.plot_update()
-
-    def set_line_log_scaley(self, e):
-        if e.control.value:
-            self.line_log_scaley = True
-        else:
-            self.line_log_scaley = False
+            self.log_scaley = False
         self.plot_update()
 
     def set_hist_cumulative(self, e):
@@ -239,25 +230,6 @@ class Plot:
 
     def set_line_width(self, e):
         self.line_width = e.control.value
-        self.plot_update()
-
-    def set_color(self, e):
-        if e.data == "Blue":
-            self.color = "b"
-        elif e.data == "Green":
-            self.color = "g"
-        elif e.data == "Red":
-            self.color = "r"
-        elif e.data == "Cyan":
-            self.color = "c"
-        elif e.data == "Magenta":
-            self.color = "m"
-        elif e.data == "Yellow":
-            self.color = "y"
-        elif e.data == "Black":
-            self.color = "k"
-        elif e.data == "White":
-            self.color = "w"
         self.plot_update()
 
     def set_x_label(self, e):
@@ -357,7 +329,6 @@ class Plot:
 
         self.plot_update()
 
-    # Get functions
     def get_x(self, e):
         if e.data != "None":
             self.x = e.data
@@ -376,7 +347,35 @@ class Plot:
         self.plot_type = e.data
         self.plot_update()
 
-    # Plot funtions
+    def aply_label_changes(self, g):
+        if self.log_scalex:
+            if self.x_label is not None:
+                _xl = f"log({self.x_label})"
+            else:
+                _xl = f"log({self.x})"
+        else:
+            if self.x_label is not None:
+                _xl = self.x_label
+            else:
+                _xl = self.x
+
+        if self.log_scaley:
+            if self.y_label is not None:
+                _yl = f"log({self.y_label})"
+            else:
+                _yl = f"log({self.y})"
+        else:
+            if self.y_label is not None:
+                _yl = self.y_label
+            else:
+                _yl = self.y
+
+        if self.title is not None:
+            g.set(title=self.title)
+
+        g.set_axis_labels(x_var=_xl)
+        g.set_axis_labels(y_var=_yl)
+
     def plot_hist(self):
         if self.y:
             kwargs = {"cbar": self.hist_color_bar}
@@ -444,6 +443,7 @@ class Plot:
         if self.title is not None:
             g.set_titles(template=self.title)
 
+        g.tight_layout(pad=3.0)
         buf = io.BytesIO()
         g.figure.savefig(buf, format="png")
         buf.seek(0)
@@ -454,14 +454,14 @@ class Plot:
 
     def plot_scatter(self):
 
-        if self.scatter_log_scalex is True:
+        if self.log_scalex is True:
             _x = np.log(self.df[self.x])
-        elif self.scatter_log_scalex is False:
+        elif self.log_scalex is False:
             _x = self.x
 
-        if self.scatter_log_scaley is True:
+        if self.log_scaley is True:
             _y = np.log(self.df[self.y])
-        elif self.scatter_log_scaley is False:
+        elif self.log_scaley is False:
             _y = self.y
 
         g = sns.relplot(data=self.df,
@@ -473,20 +473,15 @@ class Plot:
                         size=self.scatter_size,
                         sizes=(100, 1000),
                         marker=self.marker,
-                        color=self.color,
                         legend=True,
                         col=self.cols,
                         col_wrap=self.cols_wrap,
                         height=self.height,
                         aspect=self.aspect)
 
-        if self.x_label is not None:
-            g.set_axis_labels(x_var=self.x_label)
-        if self.title is not None:
-            g.set_titles(template=self.title)
-        if self.y_label is not None:
-            g.set_axis_labels(y_var=self.y_label)
+        self.aply_label_changes(g=g)
 
+        g.tight_layout(pad=3.0)
         buf = io.BytesIO()
         g.figure.savefig(buf, format="png")
         buf.seek(0)
@@ -496,20 +491,19 @@ class Plot:
         self.main_plot.update()
 
     def plot_line(self):
-        if self.line_log_scalex is True:
+        if self.log_scalex is True:
             _x = np.log(self.df[self.x])
-        elif self.line_log_scalex is False:
+        elif self.log_scalex is False:
             _x = self.x
 
-        if self.line_log_scaley is True:
+        if self.log_scaley is True:
             _y = np.log(self.df[self.y])
-        elif self.line_log_scaley is False:
+        elif self.log_scaley is False:
             _y = self.y
 
         g = sns.relplot(data=self.df,
                         x=_x,
                         y=_y,
-                        color=self.color,
                         hue=self.hue,
                         style=self.style,
                         markers=self.line_markers,
@@ -521,13 +515,9 @@ class Plot:
                         aspect=self.aspect,
                         kind="line")
 
-        if self.x_label is not None:
-            g.set_axis_labels(x_var=self.x_label)
-        if self.title is not None:
-            g.set_titles(template=self.title)
-        if self.y_label is not None:
-            g.set_axis_labels(y_var=self.y_label)
+        self.aply_label_changes(g=g)
 
+        g.tight_layout(pad=3.0)
         buf = io.BytesIO()
         g.figure.savefig(buf, format="png")
         buf.seek(0)
@@ -536,7 +526,6 @@ class Plot:
 
         self.main_plot.update()
 
-    # Update functions
     def plot_update(self):
         if self.plot_type == "Histogram":
             self.plot_hist()

@@ -1,30 +1,27 @@
 import flet as ft
 import seaborn as sns
-from plot import Plot
-from scatter import Scatter
-from line import Line
-from histogram import Histogram
-from axes import Axes
-# from files import Files
-from data import Data
-from loading import LoadingOverlay
-from config import (icons_width, icons_height)
 import io
 import base64
 import pandas as pd
+
+from plot import Plot
+from data import Data
+from axes import Axes
+from loading import LoadingOverlay
+from config import (icons_width, icons_height)
+
+from scatter import Scatter
+from line import Line
+from histogram import Histogram
 
 sns.set_theme(style="darkgrid")
 
 
 def main(page):
     page.title = "Plotador"
-    page.fonts = {
-        "JetBrainsMono": "assets/fonts/JetBrainsMono-2.304/fonts/JetBrainsMono-Light.ttf"
-    }
     primary_color = ft.Colors.INDIGO
     on_primary_color = ft.Colors.WHITE
-    page.theme = ft.Theme(font_family="JetBrainsMono",
-                          color_scheme=ft.ColorScheme(
+    page.theme = ft.Theme(color_scheme=ft.ColorScheme(
                             primary=primary_color,
                             on_primary=on_primary_color,
                             primary_container=primary_color,
@@ -33,7 +30,6 @@ def main(page):
                           visual_density=ft.VisualDensity.COMFORTABLE,
                           )
 
-    # Header
     github_icon = ft.Image(src="icons/github.svg",
                            width=icons_width,
                            height=icons_height,
@@ -47,13 +43,11 @@ def main(page):
         title=ft.Text("Plotador",
                       weight=ft.FontWeight.BOLD,),
         center_title=False,
-        # bgcolor=ft.colors.SURFACE_VARIANT,
         actions=[ft.IconButton(content=github_icon,
                                url="https://github.com/seu-repositorio"),
                  ft.IconButton(content=buy_me_a_coffee_icon,
                                url="https://www.paypal.com/donate/?business=EENWCL2V74NTC&no_recurring=0&currency_code=BRL")],)
 
-    # Create fig
     buf = io.BytesIO()
     g = sns.FacetGrid(data=pd.DataFrame(), height=8, aspect=1)
     g.figure.savefig(buf, format="png")
@@ -62,8 +56,9 @@ def main(page):
     scatter = Scatter()
     line = Line()
     histogram = Histogram()
-
-    plot = Plot(histogram_obj=histogram, line_obj=line, scatter_obj=scatter)
+    data = Data()
+    axes = Axes()
+    plot = Plot(data_obj=data, histogram_obj=histogram, line_obj=line, scatter_obj=scatter)
 
     scatter_props = scatter.scatter_props(plot.set_size,
                                           plot.set_scatter_size,
@@ -72,8 +67,8 @@ def main(page):
                                           plot.set_style,
                                           plot.set_cols,
                                           plot.set_cols_wrap,
-                                          plot.set_scatter_log_scalex,
-                                          plot.set_scatter_log_scaley)
+                                          plot.set_log_scalex,
+                                          plot.set_log_scaley)
 
     line_props = line.line_props(plot.set_line_width,
                                  plot.set_line_markers,
@@ -82,8 +77,8 @@ def main(page):
                                  plot.set_hue,
                                  plot.set_cols,
                                  plot.set_cols_wrap,
-                                 plot.set_line_log_scalex,
-                                 plot.set_line_log_scaley)
+                                 plot.set_log_scalex,
+                                 plot.set_log_scaley)
 
     hist_props = histogram.hist_props(plot.set_bins,
                                       plot.set_hist_kde,
@@ -98,7 +93,6 @@ def main(page):
                                       plot.set_cols_wrap,
                                       plot.set_hist_kind)
 
-    axes = Axes()
     axes.axes_props(plot.handle_type,
                     plot.get_x,
                     plot.get_y,
@@ -107,15 +101,10 @@ def main(page):
                     plot.set_labels,
                     plot.set_title)
 
-    data = Data()
-
     plot.main_plot = fig
     plot.page = page
     plot.ax = g.ax
 
-    # ****************************************************************
-    # ****************************************************************
-    # Upload file
     def pick_file(e):
         file_picker.pick_files()
 
@@ -132,21 +121,17 @@ def main(page):
             data.read_file_handler(file_name, file_path)
             plot.df = data.df
 
-    # Save plot
     def save_file_result(e):
         save_file_path.value = e.path if e.path else "Cancelled!"
         plot.save_plot(e.path)
         save_file_path.update()
 
-    # ****************************************************************
-    # ****************************************************************
     loading_overlay = LoadingOverlay()
     file_picker = ft.FilePicker(on_result=read_file_loading_screen)
     page.overlay.append(file_picker)
     save_file_dialog = ft.FilePicker(on_result=save_file_result)
     save_file_path = ft.Text()
 
-    # hide all dialogs in overlay
     page.overlay.extend([save_file_dialog])
 
     data.x_axis = axes.x_axis
@@ -209,7 +194,6 @@ def main(page):
                 tabs=[ft.Tab(text="Axes", content=props),
                       ft.Tab(text="Properties", content=plot_props)],)
 
-    # Adding props to the page
     page.add(ft.Stack([ft.Row([ft.Container(content=col, expand=1),
                                ft.VerticalDivider(),
                                ft.Container(content=t,
