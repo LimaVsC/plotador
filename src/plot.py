@@ -50,16 +50,7 @@ class Plot:
         self.hist_cumulative = False
         self._initial_state = copy.deepcopy(self.__dict__)
 
-    def reset(self):
-        to_keep = ["histogram",
-                   "scatter",
-                   "line",
-                   "page",
-                   "main_plot",
-                   "data",
-                   "df",
-                   "x",
-                   "y"]
+    def reset(self, to_keep):
         to_reset = {k: v for k, v in self._initial_state.items()
                     if k not in to_keep}
 
@@ -69,7 +60,17 @@ class Plot:
     def handle_type(self, e):
         plot_type = e.data
         if self.plot_type is not None and plot_type != self.plot_type:
-            self.reset()
+            to_keep = ["histogram",
+                       "scatter",
+                       "line",
+                       "page",
+                       "main_plot",
+                       "data",
+                       "df",
+                       "x",
+                       "y",
+                       "plot_type"]
+            self.reset(to_keep)
         if plot_type == "Histogram":
             self.histogram.hist_props.visible = True
             self.line.line_props.visible = False

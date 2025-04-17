@@ -112,7 +112,14 @@ def main(page):
         loading_overlay.start_loading(page, on_file_picked, e)
 
     def on_file_picked(e):
-        # plot.reset()
+        to_keep = ["histogram",
+                   "scatter",
+                   "line",
+                   "page",
+                   "main_plot",
+                   "data",
+                   "plot_type"]
+        plot.reset(to_keep)
         if e.files is None:
             loading_overlay.hide(page)
         else:
