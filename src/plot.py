@@ -14,7 +14,7 @@ class Plot:
         self.line = line_obj
         self.scatter = scatter_obj
 
-        self.page = None
+        self.page = data_obj.page
         self.main_plot = ft.Image()
         self.df = None
         self.x = []
@@ -534,6 +534,7 @@ class Plot:
             self.plot_scatter()
         elif self.plot_type == "Line":
             self.plot_line()
+        print("Plot")
 
     def save_plot(self, path):
         plt.savefig(path)

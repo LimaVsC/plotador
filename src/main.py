@@ -8,6 +8,8 @@ from plot import Plot
 from data import Data
 from axes import Axes
 from loading import LoadingOverlay
+from file_monitor import Monitor
+from file_picker import FilePicker
 from config import (icons_width, icons_height)
 
 from scatter import Scatter
@@ -58,8 +60,19 @@ def main(page):
     histogram = Histogram()
     data = Data()
     axes = Axes()
-    plot = Plot(data_obj=data, histogram_obj=histogram, line_obj=line, scatter_obj=scatter)
+    plot = Plot(data_obj=data,
+                histogram_obj=histogram,
+                line_obj=line,
+                scatter_obj=scatter)
 
+    loading_overlay = LoadingOverlay()
+    monitor = Monitor(".", "", None)
+    monitor.start()
+    file_picker = FilePicker(page,
+                             data,
+                             plot,
+                             loading_overlay,
+                             monitor)
     scatter_props = scatter.scatter_props(plot.set_size,
                                           plot.set_scatter_size,
                                           plot.set_marker,
@@ -103,41 +116,12 @@ def main(page):
 
     plot.main_plot = fig
     plot.page = page
+    data.page = page
     plot.ax = g.ax
 
-    def pick_file(e):
-        file_picker.pick_files()
-
-    def read_file_loading_screen(e):
-        loading_overlay.start_loading(page, on_file_picked, e)
-
-    def on_file_picked(e):
-        to_keep = ["histogram",
-                   "scatter",
-                   "line",
-                   "page",
-                   "main_plot",
-                   "data",
-                   "plot_type"]
-        plot.reset(to_keep)
-        if e.files is None:
-            loading_overlay.hide(page)
-        else:
-            file_name = e.files[0].name
-            file_path = e.files[0].path
-            data.read_file_handler(file_name, file_path)
-            plot.df = data.df
-
-    def save_file_result(e):
-        save_file_path.value = e.path if e.path else "Cancelled!"
-        plot.save_plot(e.path)
-        save_file_path.update()
-
-    loading_overlay = LoadingOverlay()
-    file_picker = ft.FilePicker(on_result=read_file_loading_screen)
-    page.overlay.append(file_picker)
-    save_file_dialog = ft.FilePicker(on_result=save_file_result)
-    save_file_path = ft.Text()
+    file_picker.file_picker.on_result = file_picker.read_file_loading_screen
+    file_picker.overlay_append()
+    save_file_dialog = ft.FilePicker(on_result=file_picker.save_file_result)
 
     page.overlay.extend([save_file_dialog])
 
@@ -158,7 +142,7 @@ def main(page):
     data.scatter_size_opts = scatter.size_r
 
     add_file = ft.FloatingActionButton(icon=ft.Icons.ADD,
-                                       on_click=pick_file)
+                                       on_click=file_picker.pick_file)
     save_plot = ft.FloatingActionButton(icon=ft.Icons.SAVE,
                                         on_click=lambda _: save_file_dialog.save_file())
 
@@ -200,6 +184,14 @@ def main(page):
                 tab_alignment=ft.TabAlignment.CENTER,
                 tabs=[ft.Tab(text="Axes", content=props),
                       ft.Tab(text="Properties", content=plot_props)],)
+
+    def handle_window_event(e):
+        if e.data == "close":
+            monitor.stop()
+            page.window.destroy()
+
+    page.window.prevent_close = True
+    page.window.on_event = handle_window_event
 
     page.add(ft.Stack([ft.Row([ft.Container(content=col, expand=1),
                                ft.VerticalDivider(),

@@ -4,6 +4,7 @@ import flet as ft
 
 class Data:
     def __init__(self):
+        self.page = None
         self.df = pd.DataFrame()
         self.x_axis = None
         self.y_axis = None
@@ -31,6 +32,7 @@ class Data:
                            header=None)
 
     def read_file_handler(self, name, path):
+        print("Data")
         if name.endswith(".csv"):
             self.df = self.read_csv(path)
         elif name.endswith(".xlsx") or name.endswith(".xls"):
