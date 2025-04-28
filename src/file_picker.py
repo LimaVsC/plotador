@@ -21,11 +21,6 @@ class FilePicker():
 
     def on_file_change(self):
         print("on_file_change")
-        # self.loading_overlay.start_loading(
-        #             self.page,
-        #             lambda:
-        #             self.data.read_file_handler(self.file_name,
-        #                                         self.file_path))
         self.data.read_file_handler(self.file_name, self.file_path)
         self.plot.df = self.data.df
         self.plot.plot_update()

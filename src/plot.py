@@ -8,11 +8,17 @@ import numpy as np
 
 
 class Plot:
-    def __init__(self, data_obj, histogram_obj, line_obj, scatter_obj):
+    def __init__(self,
+                 data_obj,
+                 histogram_obj,
+                 line_obj,
+                 scatter_obj,
+                 cat_obj):
         self.data = data_obj
         self.histogram = histogram_obj
         self.line = line_obj
         self.scatter = scatter_obj
+        self.categorical = cat_obj
 
         self.page = data_obj.page
         self.main_plot = ft.Image()
@@ -29,10 +35,12 @@ class Plot:
         self.log_scalex = False
         self.log_scaley = False
         self.hist_log_scalex = False
+        self.cat_log_scale = False
         self.hist_log_scaley = False
         self.hist_color_bar = False
         self.hist_element = "bars"
         self.hist_kind = "hist"
+        self.cat_kind = "strip"
         self.bins = 30
         self.cols_wrap = None
         self.size = 50
@@ -63,6 +71,7 @@ class Plot:
             to_keep = ["histogram",
                        "scatter",
                        "line",
+                       "categorical",
                        "page",
                        "main_plot",
                        "data",
@@ -75,10 +84,12 @@ class Plot:
             self.histogram.hist_props.visible = True
             self.line.line_props.visible = False
             self.scatter.scatter_props.visible = False
+            self.categorical.cat_props.visible = False
 
             self.histogram.hist_props.update()
             self.line.line_props.update()
             self.scatter.scatter_props.update()
+            self.categorical.cat_props.update()
 
             self.get_type(e)
 
@@ -86,10 +97,12 @@ class Plot:
             self.histogram.hist_props.visible = False
             self.line.line_props.visible = False
             self.scatter.scatter_props.visible = True
+            self.categorical.cat_props.visible = False
 
             self.histogram.hist_props.update()
             self.line.line_props.update()
             self.scatter.scatter_props.update()
+            self.categorical.cat_props.update()
 
             self.get_type(e)
 
@@ -97,10 +110,25 @@ class Plot:
             self.histogram.hist_props.visible = False
             self.line.line_props.visible = True
             self.scatter.scatter_props.visible = False
+            self.categorical.cat_props.visible = False
 
             self.histogram.hist_props.update()
             self.line.line_props.update()
             self.scatter.scatter_props.update()
+            self.categorical.cat_props.update()
+
+            self.get_type(e)
+
+        elif plot_type == "Categorical":
+            self.histogram.hist_props.visible = False
+            self.line.line_props.visible = False
+            self.scatter.scatter_props.visible = False
+            self.categorical.cat_props.visible = True
+
+            self.histogram.hist_props.update()
+            self.line.line_props.update()
+            self.scatter.scatter_props.update()
+            self.categorical.cat_props.update()
 
             self.get_type(e)
 
@@ -159,6 +187,13 @@ class Plot:
             self.hist_log_scaley = False
         self.plot_update()
 
+    def set_cat_log_scale(self, e):
+        if e.control.value:
+            self.cat_log_scale = True
+        else:
+            self.cat_log_scale = False
+        self.plot_update()
+
     def set_log_scalex(self, e):
         if e.control.value:
             self.log_scalex = True
@@ -203,6 +238,25 @@ class Plot:
             self.hist_kind = "kde"
         if e.data == "eCDF":
             self.hist_kind = "ecdf"
+        self.plot_update()
+
+    def set_cat_kind(self, e):
+        if e.data == "Strip":
+            self.cat_kind = "strip"
+        if e.data == "Swarm":
+            self.cat_kind = "swarm"
+        if e.data == "Box":
+            self.cat_kind = "box"
+        if e.data == "Violin":
+            self.cat_kind = "violin"
+        if e.data == "Boxen":
+            self.cat_kind = "boxen"
+        if e.data == "Point":
+            self.cat_kind = "point"
+        if e.data == "Bar":
+            self.cat_kind = "bar"
+        if e.data == "Count":
+            self.cat_kind = "count"
         self.plot_update()
 
     def set_hist_stats(self, e):
@@ -527,6 +581,36 @@ class Plot:
 
         self.main_plot.update()
 
+    def plot_cat(self):
+        g = sns.catplot(data=self.df,
+                        x=self.x,
+                        y=self.y,
+                        hue=self.hue,
+                        log_scale=self.cat_log_scale,
+                        legend=True,
+                        kind=self.cat_kind,
+                        height=self.height,
+                        aspect=self.aspect,
+                        col=self.cols,
+                        col_wrap=self.cols_wrap,
+                        )
+
+        if self.x_label is not None:
+            g.set_axis_labels(x_var=self.x_label)
+        if self.y and self.y_label is not None:
+            g.set_axis_labels(y_var=self.y_label)
+        if self.title is not None:
+            g.set(title=self.title)
+
+        g.tight_layout(pad=3.0)
+        buf = io.BytesIO()
+        g.figure.savefig(buf, format="png")
+        buf.seek(0)
+        image_data = base64.b64encode(buf.getvalue()).decode()
+        self.main_plot.src_base64 = image_data
+
+        self.main_plot.update()
+
     def plot_update(self):
         if self.plot_type == "Histogram":
             self.plot_hist()
@@ -534,7 +618,8 @@ class Plot:
             self.plot_scatter()
         elif self.plot_type == "Line":
             self.plot_line()
-        print("Plot")
+        elif self.plot_type == "Categorical":
+            self.plot_cat()
 
     def save_plot(self, path):
         plt.savefig(path)

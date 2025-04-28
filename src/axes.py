@@ -16,7 +16,8 @@ class Axes():
                                      border_radius=border_radius,
                                      options=[ft.dropdown.Option("Line"),
                                               ft.dropdown.Option("Scatter"),
-                                              ft.dropdown.Option("Histogram")],
+                                              ft.dropdown.Option("Histogram"),
+                                              ft.dropdown.Option("Categorical")],
                                      on_change=handle_type)
 
         self.axes_title = ft.Text("Plot type and Axes",

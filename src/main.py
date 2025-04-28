@@ -15,6 +15,7 @@ from config import (icons_width, icons_height)
 from scatter import Scatter
 from line import Line
 from histogram import Histogram
+from categorical import Categorical
 
 sns.set_theme(style="darkgrid")
 
@@ -58,12 +59,14 @@ def main(page):
     scatter = Scatter()
     line = Line()
     histogram = Histogram()
+    categorical = Categorical()
     data = Data()
     axes = Axes()
     plot = Plot(data_obj=data,
                 histogram_obj=histogram,
                 line_obj=line,
-                scatter_obj=scatter)
+                scatter_obj=scatter,
+                cat_obj=categorical)
 
     loading_overlay = LoadingOverlay()
     monitor = Monitor(".", "", None)
@@ -106,6 +109,11 @@ def main(page):
                                       plot.set_cols_wrap,
                                       plot.set_hist_kind)
 
+    cat_props = categorical.categorical_props(plot.set_cat_log_scale,
+                                              plot.set_cat_kind,
+                                              plot.set_hue,
+                                              plot.set_cols,
+                                              plot.set_cols_wrap)
     axes.axes_props(plot.handle_type,
                     plot.get_x,
                     plot.get_y,
@@ -131,10 +139,12 @@ def main(page):
     data.hist_hue_opts = histogram.hist_hue_opts
     data.scatter_hue_opts = scatter.hue_opts
     data.line_hue_opts = line.line_hue_opts
+    data.cat_hue_opts = categorical.cat_hue_opts
 
     data.hist_cols_opts = histogram.hist_cols_opts
     data.scatter_cols_opts = scatter.scatter_cols_opts
     data.line_cols_opts = line.line_cols_opts
+    data.cat_cols_opts = categorical.cat_cols_opts
 
     data.scatter_style_opts = scatter.style_opts
     data.line_style_opts = line.line_style_opts
@@ -167,14 +177,16 @@ def main(page):
                       general_props,
                       line_props,
                       scatter_props,
-                      hist_props,],
+                      hist_props,
+                      cat_props],
                       alignment=ft.MainAxisAlignment.CENTER,
                       horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                       scroll=True)
     plot_props = ft.Column([
                       line_props,
                       scatter_props,
-                      hist_props,],
+                      hist_props,
+                      cat_props],
                       alignment=ft.MainAxisAlignment.CENTER,
                       horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                       scroll=True)

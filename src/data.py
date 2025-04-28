@@ -32,7 +32,6 @@ class Data:
                            header=None)
 
     def read_file_handler(self, name, path):
-        print("Data")
         if name.endswith(".csv"):
             self.df = self.read_csv(path)
         elif name.endswith(".xlsx") or name.endswith(".xls"):
@@ -64,6 +63,8 @@ class Data:
                                          for item in _hue_opts]
         self.line_hue_opts.options = [ft.dropdown.Option(f"{item}")
                                       for item in _hue_opts]
+        self.cat_hue_opts.options = [ft.dropdown.Option(f"{item}")
+                                     for item in _hue_opts]
 
         self.hist_cols_opts.options = [ft.dropdown.Option(f"{item}")
                                        for item in _cols_opts]
@@ -71,6 +72,8 @@ class Data:
                                           for item in _cols_opts]
         self.line_cols_opts.options = [ft.dropdown.Option(f"{item}")
                                        for item in _cols_opts]
+        self.cat_cols_opts.options = [ft.dropdown.Option(f"{item}")
+                                      for item in _cols_opts]
 
         self.scatter_style_opts.options = [ft.dropdown.Option(f"{item}")
                                            for item in _hue_opts]
@@ -90,6 +93,7 @@ class Data:
         self.hist_hue_opts.update()
         self.scatter_hue_opts.update()
         self.line_hue_opts.update()
+        self.cat_hue_opts.update()
 
         self.scatter_style_opts.update()
         self.line_style_opts.update()
