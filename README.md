@@ -62,6 +62,7 @@ Currently we suport three types of plots:
 - Histogram;
 - Line;
 - Scatter;
+- Categorical.
 
 ### Histogram
 <img src="./docs/images/histogram.png" alt="histogram" width="700"/>
