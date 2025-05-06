@@ -63,6 +63,7 @@ def main(page):
     data = Data()
     axes = Axes()
     plot = Plot(data_obj=data,
+                axes_obj=axes,
                 histogram_obj=histogram,
                 line_obj=line,
                 scatter_obj=scatter,
@@ -118,10 +119,12 @@ def main(page):
                     plot.get_x,
                     plot.get_y,
                     plot.set_x_label,
+                    plot.x_label_reset,
                     plot.set_y_label,
-                    plot.set_labels,
-                    plot.set_title)
-
+                    plot.y_label_reset,
+                    plot.set_title,
+                    plot.title_reset)
+    plot.axes = axes
     plot.main_plot = fig
     plot.page = page
     data.page = page

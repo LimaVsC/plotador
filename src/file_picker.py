@@ -20,7 +20,6 @@ class FilePicker():
         self.sile_name = None
 
     def on_file_change(self):
-        print("on_file_change")
         self.data.read_file_handler(self.file_name, self.file_path)
         self.plot.df = self.data.df
         self.plot.plot_update()
@@ -40,9 +39,11 @@ class FilePicker():
         to_keep = ["histogram",
                    "scatter",
                    "line",
+                   "categorical",
                    "page",
                    "main_plot",
                    "data",
+                   "axes",
                    "plot_type"]
         self.plot.reset(to_keep)
         if e.files is None:

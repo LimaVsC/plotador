@@ -10,11 +10,13 @@ import numpy as np
 class Plot:
     def __init__(self,
                  data_obj,
+                 axes_obj,
                  histogram_obj,
                  line_obj,
                  scatter_obj,
                  cat_obj):
         self.data = data_obj
+        self.axes = axes_obj
         self.histogram = histogram_obj
         self.line = line_obj
         self.scatter = scatter_obj
@@ -43,11 +45,10 @@ class Plot:
         self.cat_kind = "strip"
         self.bins = 30
         self.cols_wrap = None
-        self.size = 50
+        self.size = 100
         self.marker = "."
         self.x_label = None
         self.y_label = None
-        self.label = None
         self.title = None
         self.hue = None
         self.cols = None
@@ -75,12 +76,13 @@ class Plot:
                        "page",
                        "main_plot",
                        "data",
+                       "axes",
                        "df",
                        "x",
                        "y",
                        "plot_type"]
             self.reset(to_keep)
-        if plot_type == "Histogram":
+        if plot_type == "Distribution":
             self.histogram.hist_props.visible = True
             self.line.line_props.visible = False
             self.scatter.scatter_props.visible = False
@@ -291,16 +293,30 @@ class Plot:
         self.x_label = e.data
         self.plot_update()
 
+    def x_label_reset(self, e):
+        self.x_label = self.x
+        self.axes.x_label.value = None
+        self.axes.x_label.update()
+        self.plot_update()
+
     def set_y_label(self, e):
         self.y_label = e.data
         self.plot_update()
 
-    def set_labels(self, e):
-        self.label = e.data
+    def y_label_reset(self, e):
+        self.y_label = self.y
+        self.axes.y_label.value = None
+        self.axes.y_label.update()
         self.plot_update()
 
     def set_title(self, e):
         self.title = e.data
+        self.plot_update()
+
+    def title_reset(self, e):
+        self.title = None
+        self.axes.plot_title.value = None
+        self.axes.plot_title.update()
         self.plot_update()
 
     def set_hue(self, e):
@@ -612,7 +628,7 @@ class Plot:
         self.main_plot.update()
 
     def plot_update(self):
-        if self.plot_type == "Histogram":
+        if self.plot_type == "Distribution":
             self.plot_hist()
         elif self.plot_type == "Scatter":
             self.plot_scatter()
