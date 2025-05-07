@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- flet: permission   -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <!-- flet: enf of permission   -->
+    <!-- flet: end of permission   -->
 
     <!-- flet: feature  -->
     <uses-feature android:name="android.software.leanback" android:required="false" />
@@ -9,6 +9,7 @@
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
     <!-- flet: end of feature  -->
 
+    <!--  -->
     <application
         android:label="Plotador"
         android:name="${applicationName}"

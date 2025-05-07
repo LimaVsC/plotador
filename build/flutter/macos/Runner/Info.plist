@@ -28,6 +28,7 @@
 		<string>MainMenu</string>
 		<key>NSPrincipalClass</key>
 		<string>NSApplication</string>
-		<!-- flet: prop  -->
+
+		
 	</dict>
 </plist>

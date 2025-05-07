@@ -1,5 +1,6 @@
 import pandas as pd
 import flet as ft
+import csv
 
 
 class Data:
@@ -19,25 +20,26 @@ class Data:
         self.scatter_size_opts = None
 
     def read_csv(self, path):
-        return pd.read_csv(path,
-                           engine="python",
-                           sep=None)
+        with open(path, newline="") as f:
+            dialect = csv.Sniffer().sniff(f.read(1024))
+            header = csv.Sniffer().has_header(f.read(1024))
+            f.seek(0)
+            sep = dialect.delimiter if dialect.delimiter != "." else ","
+            if header:
+                return pd.read_csv(f, sep=sep)
+            else:
+                return pd.read_csv(f, sep=sep, header=None)
 
     def read_excel(self, path):
         return pd.read_excel(path)
 
-    def read_other(self, path):
-        return pd.read_csv(path,
-                           delim_whitespace=True,
-                           header=None)
-
     def read_file_handler(self, name, path):
-        if name.endswith(".csv"):
-            self.df = self.read_csv(path)
-        elif name.endswith(".xlsx") or name.endswith(".xls"):
+        if name.endswith(".xlsx") or name.endswith(".xls"):
             self.df = self.read_excel(path)
         else:
-            self.df = self.read_other(path)
+            self.df = self.read_csv(path)
+            if type(self.df.columns[0]) is not str:
+                self.df.columns = self.df.columns.map(str)
         self.set_opts()
 
     def set_opts(self):

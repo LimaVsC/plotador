@@ -11,7 +11,8 @@ dependencies = [
   "flet",
   "pandas",
   "seaborn",
-  "matplotlib"
+  "matplotlib",
+  "watchdog"
 ]
 
 [tool.flet]

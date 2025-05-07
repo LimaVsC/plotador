@@ -14,15 +14,29 @@ import 'package:window_manager/window_manager.dart';
 
 import "python.dart";
 
+/*
+
+
+
+
+
+
+show_boot_screen: False
+boot_screen_message: None
+show_startup_screen: False
+startup_screen_message: None
+*/
+
 
 
 const bool isProduction = bool.fromEnvironment('dart.vm.product');
 
 const assetPath = "app/app.zip";
 const pythonModuleName = "main";
-final hideLoadingPage =
-    bool.tryParse("True".toLowerCase()) ??
-        true;
+final showAppBootScreen = bool.tryParse("False".toLowerCase()) ?? false;
+const appBootScreenMessage = 'Preparing the app for its first launch…';
+final showAppStartupScreen = bool.tryParse("False".toLowerCase()) ?? false;
+const appStartupScreenMessage = 'Getting things ready…';
 
 List<CreateControlFactory> createControlFactories = [
 
@@ -49,7 +63,8 @@ void main(List<String> args) async {
               ? FletApp(
                   pageUrl: pageUrl,
                   assetsDir: assetsDir,
-                  hideLoadingPage: hideLoadingPage,
+                  showAppStartupScreen: showAppStartupScreen,
+                  appStartupScreenMessage: appStartupScreenMessage,
                   createControlFactories: createControlFactories)
               : FutureBuilder(
                   future: runPythonApp(args),
@@ -67,7 +82,8 @@ void main(List<String> args) async {
                       return FletApp(
                           pageUrl: pageUrl,
                           assetsDir: assetsDir,
-                          hideLoadingPage: hideLoadingPage,
+                          showAppStartupScreen: showAppStartupScreen,
+                          appStartupScreenMessage: appStartupScreenMessage,
                           createControlFactories: createControlFactories);
                     }
                   });
@@ -79,7 +95,7 @@ void main(List<String> args) async {
                   text: snapshot.error.toString()));
         } else {
           // loading
-          return const MaterialApp(home: BlankScreen());
+          return MaterialApp(home: showAppBootScreen ? const BootScreen() : const BlankScreen());
         }
       }));
 }
@@ -284,6 +300,34 @@ class ErrorScreen extends StatelessWidget {
           ],
         ),
       )),
+    );
+  }
+}
+
+class BootScreen extends StatelessWidget {
+  const BootScreen({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SizedBox(
+              width: 30,
+              height: 30,
+              child: CircularProgressIndicator(strokeWidth: 3),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Text(appBootScreenMessage, style: Theme.of(context).textTheme.bodySmall,)
+          ],
+        ),
+      ),
     );
   }
 }
