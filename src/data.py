@@ -21,13 +21,16 @@ class Data:
 
     def read_csv(self, path):
         with open(path, newline="") as f:
-            dialect = csv.Sniffer().sniff(f.read(1024))
-            header = csv.Sniffer().has_header(f.read(1024))
+            header = csv.Sniffer().has_header(f.read(2048))
+            f.seek(0)
+            dialect = csv.Sniffer().sniff(f.read(2048))
             f.seek(0)
             sep = dialect.delimiter if dialect.delimiter != "." else ","
             if header:
+                print("header")
                 return pd.read_csv(f, sep=sep)
             else:
+                print("no header")
                 return pd.read_csv(f, sep=sep, header=None)
 
     def read_excel(self, path):

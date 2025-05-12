@@ -512,7 +512,7 @@ class Plot:
         if self.y and self.y_label is not None:
             g.set_axis_labels(y_var=self.y_label)
         if self.title is not None:
-            g.set_titles(template=self.title)
+            g.set(title=self.title)
 
         g.tight_layout(pad=3.0)
         buf = io.BytesIO()
