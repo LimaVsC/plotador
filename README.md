@@ -9,7 +9,13 @@ No login, no subscription — everything runs locally!
 
 ## How to use
 
-https://www.youtube.com/watch?v=3xWLBHWQP-U
+
+
+https://github.com/user-attachments/assets/c0816b45-e4fa-4e95-b45c-deab29f3cfef
+
+
+
+
 
 ## Plot types
 
