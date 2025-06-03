@@ -19,7 +19,7 @@ https://github.com/user-attachments/assets/c0816b45-e4fa-4e95-b45c-deab29f3cfef
 
 ## Plot types
 
-Currently three types of plots are suported:
+Currently four types of plots are suported:
 
 - Distribution;
 - Line;
