@@ -442,7 +442,10 @@ class Plot:
                 _yl = self.y
 
         if self.title is not None:
-            g.set(title=self.title)
+            if self.cols is None:
+                g.set(title=self.title)
+            else:
+                g.set_titles(template=self.title)
 
         g.set_axis_labels(x_var=_xl)
         g.set_axis_labels(y_var=_yl)
@@ -512,7 +515,10 @@ class Plot:
         if self.y and self.y_label is not None:
             g.set_axis_labels(y_var=self.y_label)
         if self.title is not None:
-            g.set(title=self.title)
+            if self.cols is None:
+                g.set(title=self.title)
+            else:
+                g.set_titles(template=self.title)
 
         g.tight_layout(pad=3.0)
         buf = io.BytesIO()
@@ -616,7 +622,10 @@ class Plot:
         if self.y and self.y_label is not None:
             g.set_axis_labels(y_var=self.y_label)
         if self.title is not None:
-            g.set(title=self.title)
+            if self.cols is None:
+                g.set(title=self.title)
+            else:
+                g.set_titles(template=self.title)
 
         g.tight_layout(pad=3.0)
         buf = io.BytesIO()

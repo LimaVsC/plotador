@@ -16,7 +16,6 @@ class MyHandler(FileSystemEventHandler):
         new_mtime = os.path.getmtime(self.path)
         if new_mtime != self.last_mtime:
             self.last_mtime = new_mtime
-            print("Arquivo modificado!")
             self.on_change()
 
 
@@ -40,12 +39,10 @@ class Monitor:
 
     def start(self):
         if not self.thread.is_alive():
-            print("Começando monitoramento")
             self.thread = threading.Thread(target=self._run, daemon=True)
             self.thread.start()
 
     def stop(self):
-        print("Parando monitoramento...")
         if self.observer.is_alive():
             self.observer.stop()
             self.observer.join()

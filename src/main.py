@@ -47,7 +47,7 @@ def main(page):
                       weight=ft.FontWeight.BOLD,),
         center_title=False,
         actions=[ft.IconButton(content=github_icon,
-                               url="https://github.com/seu-repositorio"),
+                               url="https://github.com/LimaVsC/plotador"),
                  ft.IconButton(content=buy_me_a_coffee_icon,
                                url="https://www.paypal.com/donate/?business=EENWCL2V74NTC&no_recurring=0&currency_code=BRL")],)
 

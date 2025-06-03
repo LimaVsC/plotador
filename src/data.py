@@ -27,10 +27,8 @@ class Data:
             f.seek(0)
             sep = dialect.delimiter if dialect.delimiter != "." else ","
             if header:
-                print("header")
                 return pd.read_csv(f, sep=sep)
             else:
-                print("no header")
                 return pd.read_csv(f, sep=sep, header=None)
 
     def read_excel(self, path):

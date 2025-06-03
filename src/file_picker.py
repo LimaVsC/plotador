@@ -62,7 +62,6 @@ class FilePicker():
                                    self.file_name,
                                    self.on_file_change)
             self.monitor.start()
-            print(self.file_path, "\n", self.monitor.path)
 
     def save_file_result(self, e):
         self.plot.save_plot(e.path)
