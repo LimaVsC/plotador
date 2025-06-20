@@ -11,7 +11,7 @@ class LoadingOverlay(ft.Container):
                                ft.Text("Loading...", size=18),],
                               alignment=ft.MainAxisAlignment.CENTER,
                               horizontal_alignment=ft.CrossAxisAlignment.CENTER),
-            bgcolor=ft.colors.with_opacity(0.7, ft.colors.BLACK),
+            bgcolor=ft.Colors.with_opacity(0.7, ft.Colors.BLACK),
             expand=True)
 
     def show(self, page):

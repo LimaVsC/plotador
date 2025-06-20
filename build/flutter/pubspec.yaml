@@ -9,7 +9,7 @@ dependencies:
   url_strategy: ^0.2.0
   window_manager: ^0.4.3
 dependency_overrides:
-  flet: 0.27.6
+  flet: 0.28.3
   serious_python:
     git:
       path: src/serious_python
