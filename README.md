@@ -14,7 +14,9 @@ No login, no subscription — everything runs locally!
 https://github.com/user-attachments/assets/c0816b45-e4fa-4e95-b45c-deab29f3cfef
 
 
+## Install
 
+Download the folder corresponding to your operating system from the 'build' directory, then run the executable inside it — no installation required.
 
 
 ## Plot types
