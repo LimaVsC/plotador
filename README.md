@@ -16,7 +16,7 @@ https://github.com/user-attachments/assets/c0816b45-e4fa-4e95-b45c-deab29f3cfef
 
 ## Install
 
-Download the folder corresponding to your operating system from the 'build' directory, then run the executable inside it — no installation required.
+Download the zip file corresponding to your operating system [here](https://github.com/LimaVsC/plotador/releases/tag/v0.1.0-alpha). Then run the executable inside it — no installation required.
 
 
 ## Plot types
